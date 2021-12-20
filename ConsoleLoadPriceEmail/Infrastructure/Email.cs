@@ -23,7 +23,8 @@ namespace ConsoleLoadPriceEmail.Infrastructure
                 using (ImapClient client = new ImapClient())
                 {
                     client.Connect("imap.yandex.ru", 993, true);
-                    client.Authenticate("", "");
+                    
+                    client.Authenticate("Email.@yandex.ru", "Password");
 
                     var inbox = client.Inbox;
                     inbox.Open(FolderAccess.ReadOnly);

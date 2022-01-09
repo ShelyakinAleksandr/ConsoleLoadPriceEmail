@@ -20,7 +20,7 @@ namespace ConsoleLoadPriceEmail.SqlRequest
 
                 MySqlConStrBld.Server = "127.0.0.1";
                 MySqlConStrBld.UserID = "Admin";
-                MySqlConStrBld.Password = "12345";
+                MySqlConStrBld.Password = "pass";
                 MySqlConStrBld.Database = "autoparts";
                 MySqlConStrBld.CharacterSet = "utf8";
                 MySqlConStrBld.SslMode = MySqlSslMode.Required;
@@ -61,8 +61,14 @@ namespace ConsoleLoadPriceEmail.SqlRequest
                 adapter.InsertCommand.Parameters.Add(
                     new MySqlParameter("@Count", MySqlDbType.Int32, 11, "Count"));
 
+                int counterPosition = 1;
+                string nameParametrException = null;
+
                 foreach (SuppliersPrice Price in suppliersPrice)
                 {
+
+                    counterPosition++;
+
                     DataRow dataRowInsert = TableInsert.NewRow();
 
                     dataRowInsert["Vendor"] = Price.Vendor;
@@ -70,11 +76,25 @@ namespace ConsoleLoadPriceEmail.SqlRequest
                     dataRowInsert["SearchVendor"] = Price.SearchVendor;
                     dataRowInsert["SearchNumber"] = Price.SearchNumber;
                     dataRowInsert["Description"] = Price.Description;
-                    dataRowInsert["Price"] = Price.Price;
-                    dataRowInsert["Count"] = Price.Count;
 
+                    if (Price.Price != null) dataRowInsert["Price"] = Price.Price;
+                    else
+                    { 
+                        Console.WriteLine("Не смог загрузить позицию " + counterPosition + "; Не Коректное значение цены");
+                        continue;
+                    }
+
+                    if (Price.Count != null) dataRowInsert["Count"] = Price.Count;
+                    else
+                    {
+                        Console.WriteLine("Не смог загрузить позицию " + counterPosition + "; Не Коректное значение количество");
+                        continue;
+                    }
+                        
                     TableInsert.Rows.Add(dataRowInsert);
                 }
+
+                Console.WriteLine("Записываю в базу");
 
                 con.Open();
                 adapter.Update(TableInsert);

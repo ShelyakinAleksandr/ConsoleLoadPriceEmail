@@ -13,25 +13,33 @@ namespace ConsoleLoadPriceEmail
         {
             List<Suppliers> suppliers = new List<Suppliers>();
 
+            //грузим поставщиков
             suppliers.Add(
                 new Suppliers()
                 {
                     Id = 1,
                     Name = "ООО доставим в срок",
-                    Email = "strannik2292107@yandex.ru"
+                    Email = "test@yandex.ru"
                 });
 
+            
             Email Email = new Email();
+            //Выбираем поставщика
+            //и грузим последнее письмо
             string pathFile = Email.LoadPriceEmail(suppliers[0]);
 
             if (pathFile != null)
             {
-                CSVFile CSVFile = new CSVFile();
-                List<SuppliersPrice> suppliersPrices = CSVFile.LoadPriceCSVFile(pathFile);
+                ReadCSVFile readCSVFile = new ReadCSVFile();
+
+                //получаем список позиций
+                List<SuppliersPrice> suppliersPrices = readCSVFile.LoadPriceCSVFile(pathFile);
+
 
                 if (suppliersPrices != null)
                 {
                     SqlQuery SqlQuery = new SqlQuery();
+                    //пишем позиции в базу
                     SqlQuery.RecordingPriceDb(suppliersPrices);
                 }
 

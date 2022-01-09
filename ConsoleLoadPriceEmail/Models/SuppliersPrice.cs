@@ -1,5 +1,4 @@
-﻿using CsvHelper.Configuration.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,8 @@ namespace ConsoleLoadPriceEmail.Models
     class SuppliersPrice
     {
         private string description = null;
-        private int count = 0;
+        private int? count = 0;
+        private double? price = 0;
         private string vendor = null;
         private string number = null;
         private string searchVendor = null;
@@ -19,7 +19,6 @@ namespace ConsoleLoadPriceEmail.Models
         /// <summary>
         /// Имя поля "Бренд" в прайсе
         /// </summary>
-        [Name("Бренд")]
         public string Vendor
         {
             get => vendor;
@@ -29,11 +28,10 @@ namespace ConsoleLoadPriceEmail.Models
                 SearchVendor = value;
             }
         }
+
         /// <summary>
         /// Имя поля "номер запчасти" в прайсе
         /// </summary>
-
-        [Name("Каталожный номер")]
         public string Number
         {
             get => number;
@@ -47,7 +45,6 @@ namespace ConsoleLoadPriceEmail.Models
         /// <summary>
         /// Имя поля "Описание" в прайсе
         /// </summary>
-        [Name("Описание")]
         public string Description
         {
             get { return description; }
@@ -64,20 +61,29 @@ namespace ConsoleLoadPriceEmail.Models
         /// <summary>
         /// Имя поля "Цена" в прайсе
         /// </summary>
-        [Name("Цена, руб.")]
-        public string Price { get; set; }
+        public object Price 
+        {
+            get { return price; }
+            set
+            {
+                try { price = Convert.ToDouble(value); }
+                catch (Exception)
+                {
+                    price = null;
+                }
+            }
+        }
 
         /// <summary>
         /// Имя поля "Наличие" в прайсе
         /// </summary>
-        [Name("Наличие")]
-        public int Count
+        public object Count
         {
             get { return count; }
             set
             {
-                try { count = value; }
-                catch (CsvHelper.TypeConversion.TypeConverterException)
+                try { count = Convert.ToInt32(value); }
+                catch (Exception)
                 {
                     try
                     {
@@ -92,7 +98,7 @@ namespace ConsoleLoadPriceEmail.Models
                         if (count.Contains('<'))
                             value = Convert.ToInt32(count.Trim('<'));
                     }
-                    finally { count = 0; }
+                    finally { count = null; }
                 }
             }
         }
@@ -100,7 +106,6 @@ namespace ConsoleLoadPriceEmail.Models
         /// <summary>
         /// Данное поле преобразует значение поля Vendor убирая из него все не ЦифроБуквенные символы
         /// </summary>
-        [Ignore]
         public string SearchVendor
         {
             get => searchVendor;
@@ -110,7 +115,6 @@ namespace ConsoleLoadPriceEmail.Models
         /// <summary>
         /// Данное поле преобразует значение поля Number убирая из него все не ЦифроБуквенные символы
         /// </summary>
-        [Ignore]
         public string SearchNumber
         {
             get => searchNumber;

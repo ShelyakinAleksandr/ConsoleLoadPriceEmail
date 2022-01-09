@@ -12,6 +12,12 @@ namespace ConsoleLoadPriceEmail.Infrastructure
 {
     class Email
     {
+        /// <summary>
+        /// Метод для загрузки последнего прайса присланного поставщиком.
+        /// Метод принимает на вход структуру Suppliers.
+        /// </summary>
+        /// <param name="suppliers"></param>
+        /// <returns>Возвращает путь к скачанному файлу</returns>
         public string LoadPriceEmail(Suppliers suppliers)
         {
             string pathToPrice = null;
@@ -24,7 +30,7 @@ namespace ConsoleLoadPriceEmail.Infrastructure
                 {
                     client.Connect("imap.yandex.ru", 993, true);
                     
-                    client.Authenticate("Email.@yandex.ru", "Password");
+                    client.Authenticate("test@yandex.ru", "pass");
 
                     var inbox = client.Inbox;
                     inbox.Open(FolderAccess.ReadOnly);
